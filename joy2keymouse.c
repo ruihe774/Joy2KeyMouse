@@ -128,9 +128,11 @@ int main(void) {
     int hat0x = 0, hat0y = 0;
     bool lz = false, rz = false;
     const double lbase = 1.01;
-    const int64_t ldiv1 = 1ll << 9, ldiv2 = 1ll << 36, lmul = 1;
+    const int64_t ldiv1 = 1ll << 9, lsub = 1ll << 13, ldiv2 = 1ll << 36,
+                  lmul = 1;
     const double rbase = 1.01;
-    const int64_t rdiv1 = 1ll << 9, rdiv2 = 1ll << 36, rmul = 2;
+    const int64_t rdiv1 = 1ll << 9, rsub = 1ll << 13, rdiv2 = 1ll << 36,
+                  rmul = 2;
     const int z_down_threshold = 512, z_up_threshold = 256;
     int64_t last_time = get_time();
 
@@ -294,10 +296,12 @@ int main(void) {
       }
 
       const int slx = (int)((int64_t)trunc(
-                                pow(lbase, (double)(abs(lx) / ldiv1)) * lx) *
+                                pow(lbase, (double)((abs(lx) - lsub) / ldiv1)) *
+                                lx) *
                             interval / ldiv2 * lmul),
                 sly = (int)((int64_t)trunc(
-                                pow(lbase, (double)(abs(ly) / ldiv1)) * ly) *
+                                pow(lbase, (double)((abs(ly) - lsub) / ldiv1)) *
+                                ly) *
                             interval / ldiv2 * lmul);
       if (slx || sly) {
         libevdev_uinput_write_event(uinput, EV_REL, REL_X, slx);
@@ -306,10 +310,12 @@ int main(void) {
       }
 
       const int srx = (int)((int64_t)trunc(
-                                pow(rbase, (double)(abs(rx) / rdiv1)) * rx) *
+                                pow(rbase, (double)((abs(rx) - rsub) / rdiv1)) *
+                                rx) *
                             interval / rdiv2 * rmul),
                 sry = (int)((int64_t)trunc(
-                                pow(rbase, (double)(abs(ry) / rdiv1)) * ry) *
+                                pow(rbase, (double)((abs(ry) - rsub) / rdiv1)) *
+                                ry) *
                             interval / rdiv2 * rmul);
       if (srx || sry) {
         if (abs(srx) > abs(sry))
