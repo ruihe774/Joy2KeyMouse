@@ -123,6 +123,11 @@ int main(void) {
       goto wait_hotplug;
     const int gamepad_fd = poll_fds[0].fd = libevdev_get_fd(gamepad);
     warnx("gamepad found: %s", libevdev_get_name(gamepad));
+    const int rc = libevdev_grab(gamepad, LIBEVDEV_GRAB);
+    if (rc < 0) {
+      errno = -rc;
+      warn("failed to grab the gamepad");
+    }
 
     int lx = 0, ly = 0, rx = 0, ry = 0, slx = 0, sly = 0, srx = 0, sry = 0;
     int hat0x = 0, hat0y = 0;
@@ -322,6 +327,7 @@ int main(void) {
       }
     }
 
+    libevdev_grab(gamepad, LIBEVDEV_UNGRAB);
     libevdev_free(gamepad);
     close(gamepad_fd);
     if (quit)
