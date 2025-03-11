@@ -295,13 +295,13 @@ int main(void) {
         }
       }
 
-      const int slx = (int)((int64_t)trunc(
-                                pow(lbase, (double)((abs(lx) - lsub) / ldiv1)) *
-                                lx) *
+      const int slx = (int)((int64_t)(pow(lbase,
+                                          (double)((abs(lx) - lsub) / ldiv1)) *
+                                      lx) *
                             interval / ldiv2 * lmul),
-                sly = (int)((int64_t)trunc(
-                                pow(lbase, (double)((abs(ly) - lsub) / ldiv1)) *
-                                ly) *
+                sly = (int)((int64_t)(pow(lbase,
+                                          (double)((abs(ly) - lsub) / ldiv1)) *
+                                      ly) *
                             interval / ldiv2 * lmul);
       if (slx || sly) {
         libevdev_uinput_write_event(uinput, EV_REL, REL_X, slx);
@@ -309,13 +309,13 @@ int main(void) {
         libevdev_uinput_write_event(uinput, EV_SYN, SYN_REPORT, 0);
       }
 
-      const int srx = (int)((int64_t)trunc(
-                                pow(rbase, (double)((abs(rx) - rsub) / rdiv1)) *
-                                rx) *
+      const int srx = (int)((int64_t)(pow(rbase,
+                                          (double)((abs(rx) - rsub) / rdiv1)) *
+                                      rx) *
                             interval / rdiv2 * rmul),
-                sry = (int)((int64_t)trunc(
-                                pow(rbase, (double)((abs(ry) - rsub) / rdiv1)) *
-                                ry) *
+                sry = (int)((int64_t)(pow(rbase,
+                                          (double)((abs(ry) - rsub) / rdiv1)) *
+                                      ry) *
                             interval / rdiv2 * rmul);
       if (srx || sry) {
         if (abs(srx) > abs(sry))
