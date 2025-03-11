@@ -129,7 +129,7 @@ int main(void) {
       warn("failed to grab the gamepad");
     }
 
-    int lx = 0, ly = 0, rx = 0, ry = 0, slx = 0, sly = 0, srx = 0, sry = 0;
+    int lx = 0, ly = 0, rx = 0, ry = 0;
     int hat0x = 0, hat0y = 0;
     bool lz = false, rz = false;
     const double lbase = 1.01;
@@ -142,7 +142,7 @@ int main(void) {
     int64_t last_time = get_time();
 
     while (true) {
-      const int rc = poll(poll_fds, 2, slx || sly || srx || sry ? 20 : -1);
+      const int rc = poll(poll_fds, 2, 20);
       const int64_t current_time = get_time();
       const int64_t interval = current_time - last_time;
       last_time = current_time;
@@ -300,24 +300,28 @@ int main(void) {
         }
       }
 
-      slx =
-          (int)((int64_t)(pow(lbase, (double)((abs(lx) - lsub) / ldiv1)) * lx) *
-                interval / ldiv2 * lmul);
-      sly =
-          (int)((int64_t)(pow(lbase, (double)((abs(ly) - lsub) / ldiv1)) * ly) *
-                interval / ldiv2 * lmul);
+      const int slx = (int)((int64_t)(pow(lbase,
+                                          (double)((abs(lx) - lsub) / ldiv1)) *
+                                      lx) *
+                            interval / ldiv2 * lmul),
+                sly = (int)((int64_t)(pow(lbase,
+                                          (double)((abs(ly) - lsub) / ldiv1)) *
+                                      ly) *
+                            interval / ldiv2 * lmul);
       if (slx || sly) {
         libevdev_uinput_write_event(uinput, EV_REL, REL_X, slx);
         libevdev_uinput_write_event(uinput, EV_REL, REL_Y, sly);
         libevdev_uinput_write_event(uinput, EV_SYN, SYN_REPORT, 0);
       }
 
-      srx =
-          (int)((int64_t)(pow(rbase, (double)((abs(rx) - rsub) / rdiv1)) * rx) *
-                interval / rdiv2 * rmul);
-      sry =
-          (int)((int64_t)(pow(rbase, (double)((abs(ry) - rsub) / rdiv1)) * ry) *
-                interval / rdiv2 * rmul);
+      const int srx = (int)((int64_t)(pow(rbase,
+                                          (double)((abs(rx) - rsub) / rdiv1)) *
+                                      rx) *
+                            interval / rdiv2 * rmul),
+                sry = (int)((int64_t)(pow(rbase,
+                                          (double)((abs(ry) - rsub) / rdiv1)) *
+                                      ry) *
+                            interval / rdiv2 * rmul);
       if (srx || sry) {
         if (abs(srx) > abs(sry))
           libevdev_uinput_write_event(uinput, EV_REL, REL_HWHEEL_HI_RES, -srx);
