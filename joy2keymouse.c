@@ -129,6 +129,7 @@ int main(void) {
       warn("failed to grab the gamepad");
     }
 
+    bool enabled = true;
     int lx = 0, ly = 0, rx = 0, ry = 0;
     int hat0x = 0, hat0y = 0;
     bool lz = false, rz = false;
@@ -178,6 +179,18 @@ int main(void) {
           warnx("libevdev_next_event returned unknown error");
           break;
         }
+
+        if (ev.type == EV_KEY && ev.code == BTN_MODE && ev.value == 0) {
+          const int rc =
+              libevdev_grab(gamepad, ((enabled = !enabled)) ? LIBEVDEV_GRAB
+                                                            : LIBEVDEV_UNGRAB);
+          if (rc < 0) {
+            errno = -rc;
+            warn("failed to grab the gamepad");
+          }
+        }
+        if (!enabled)
+          continue;
 
         switch (ev.type) {
         case EV_ABS:
